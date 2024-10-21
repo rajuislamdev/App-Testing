@@ -1,9 +1,14 @@
 import 'package:app_test/views/login_screen.dart';
-import 'package:app_test/views/sign_up_screen.dart';
 import 'package:app_test/views/profile_screen.dart';
+import 'package:app_test/views/sign_up_screen.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-void main() => runApp(const MyApp());
+void main() => runApp(
+      const ProviderScope(
+        child: MyApp(),
+      ),
+    );
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

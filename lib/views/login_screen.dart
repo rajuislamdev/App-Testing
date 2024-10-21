@@ -1,4 +1,7 @@
+import 'package:app_test/componants/custom_button.dart';
+import 'package:app_test/providers/auth_controller_providers.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
@@ -28,21 +31,31 @@ class LoginScreen extends StatelessWidget {
               obscureText: true,
             ),
             const SizedBox(height: 16.0),
-            ElevatedButton(
-              key: const Key('loginButton'),
-              onPressed: () {
-                if (emailController.text == 'test@example.com' &&
-                    passwordController.text == 'password123') {
-                  Navigator.pushReplacementNamed(context, '/third');
-                } else {
-                  // Handle error
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Invalid credentials')),
+            Consumer(builder: (context, ref, _) {
+              final loginState = ref.watch(loginController);
+              return loginState.when(
+                data: (user) => CustomButton(
+                  onPressed: () {
+                    ref.read(loginController.notifier).login(
+                          phone: emailController.text,
+                          password: passwordController.text,
+                        );
+                  },
+                ),
+                error: (error, stackTrace) {
+                  return ErrorDisplay(
+                    errorMessage: error.toString(),
+                    onRetry: () {
+                      ref.read(loginController.notifier).login(
+                            phone: emailController.text,
+                            password: passwordController.text,
+                          );
+                    },
                   );
-                }
-              },
-              child: const Text('Login'),
-            ),
+                },
+                loading: () => const CircularProgressIndicator(),
+              );
+            }),
             TextButton(
               key: const Key('signUpButton'),
               onPressed: () {
