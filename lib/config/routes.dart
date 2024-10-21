@@ -1,6 +1,7 @@
 import 'package:app_test/views/authentication/login_screen.dart';
 import 'package:app_test/views/authentication/sign_up_screen.dart';
 import 'package:app_test/views/profile/profile_screen.dart';
+import 'package:app_test/views/splash/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 class AppRoutes {
@@ -15,7 +16,7 @@ class AppRoutes {
   static Route<dynamic> generateRoute(RouteSettings settings) {
     switch (settings.name) {
       case splash:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
+        return MaterialPageRoute(builder: (_) => const SplashScreen());
       case signUpScreen:
         return _buildRouteWithAnimation(const SignUpScreen());
       case loginScreen:
@@ -23,7 +24,8 @@ class AppRoutes {
       case thirdScreen:
         return _buildRouteWithAnimation(const SignUpSuccessScreen());
       default:
-        return MaterialPageRoute(builder: (_) => const SizedBox());
+        debugPrint('Unknown route: ${settings.name}');
+        return MaterialPageRoute(builder: (_) => SizedBox());
     }
   }
 
@@ -32,7 +34,7 @@ class AppRoutes {
     return PageRouteBuilder(
       pageBuilder: (context, animation, secondaryAnimation) => page,
       transitionsBuilder: (context, animation, secondaryAnimation, child) {
-        var begin = const Offset(0.0, 1.0);
+        var begin = const Offset(1.0, 0.0);
         var end = Offset.zero;
         var curve = Curves.ease;
         var tween = Tween<Offset>(

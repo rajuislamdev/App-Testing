@@ -2,15 +2,19 @@ import 'package:flutter/material.dart';
 
 class CustomButton extends StatelessWidget {
   final VoidCallback onPressed;
+  final String text;
 
-  const CustomButton({super.key, required this.onPressed});
+  const CustomButton({
+    super.key,
+    required this.onPressed,
+    required this.text,
+  });
 
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      key: const Key('CustomButton'),
       onPressed: onPressed,
-      child: const Text('Login'),
+      child: Text(text),
     );
   }
 }
@@ -31,7 +35,6 @@ class ErrorDisplay extends StatelessWidget {
           style: const TextStyle(color: Colors.red),
         ),
         ElevatedButton(
-          key: const Key('loginButton'),
           onPressed: onRetry,
           child: const Text('Retry'),
         ),

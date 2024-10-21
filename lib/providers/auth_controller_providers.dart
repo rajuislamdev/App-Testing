@@ -9,7 +9,7 @@ final loginController =
 });
 
 final registerController =
-    StateNotifierProvider<RegisterController, AsyncValue<response_model.User>?>(
+    StateNotifierProvider<RegisterController, AsyncValue<response_model.User?>>(
         (ref) {
   return RegisterController();
 });

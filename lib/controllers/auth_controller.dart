@@ -15,8 +15,8 @@ class LoginController extends StateNotifier<AsyncValue<response_model.User?>> {
 }
 
 class RegisterController
-    extends StateNotifier<AsyncValue<response_model.User>?> {
-  RegisterController() : super(null);
+    extends StateNotifier<AsyncValue<response_model.User?>> {
+  RegisterController() : super(const AsyncData(null));
 
   Future<void> register({required User user}) async {
     state = const AsyncValue.loading();
