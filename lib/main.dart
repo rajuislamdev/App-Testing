@@ -1,6 +1,5 @@
-import 'package:app_test/views/login_screen.dart';
-import 'package:app_test/views/profile_screen.dart';
-import 'package:app_test/views/sign_up_screen.dart';
+import 'package:app_test/config/routes.dart';
+import 'package:app_test/views/authentication/login_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -22,11 +21,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
       ),
       home: const LoginScreen(),
-      routes: {
-        '/signUp': (context) => const SignUpScreen(),
-        '/login': (context) => const LoginScreen(),
-        '/third': (context) => const SignUpSuccessScreen(),
-      },
+      onGenerateRoute: AppRoutes.generateRoute,
     );
   }
 }
