@@ -1,7 +1,12 @@
+import 'package:app_test/componants/confirmation_dialog.dart';
+import 'package:app_test/componants/language_select_dialog.dart';
+import 'package:app_test/config/hive_constants.dart';
+import 'package:app_test/services/hive_service.dart';
 import 'package:app_test/views/profile/widgets/setting_card_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gap/gap.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -26,6 +31,25 @@ class ProfileScreen extends StatelessWidget {
 class _UserProfileSettings extends StatelessWidget {
   const _UserProfileSettings();
 
+  void _showConfirmationDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => ConfirmationDialog(
+        title: 'Logout',
+        message: 'Are you sure you want to logout?',
+        negativeText: 'Cancel',
+        positiveText: 'Logout',
+      ),
+    );
+  }
+
+  void _showLanguageSelectDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (_) => const LanguageSelectDialog(),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Flexible(
@@ -34,35 +58,47 @@ class _UserProfileSettings extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SettingCard(
-            leadingIcon: Icons.dark_mode_outlined,
-            title: 'Dark Mode',
-            widget: Switch(
-              value: true,
-              onChanged: (_) {},
-            ),
-          ),
-          SettingCard(
-            leadingIcon: Icons.language_outlined,
-            title: 'Language',
-            widget: Text(
-              'English',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    color: Theme.of(context).colorScheme.primary,
+          ValueListenableBuilder(
+              valueListenable: Hive.box(HiveConstants.settingsBox).listenable(),
+              builder: (context, settingsBox, _) {
+                final isDarkMode = settingsBox.get(HiveConstants.isDarkModeKey,
+                    defaultValue: false) as bool;
+                return SettingCard(
+                  leadingIcon: Icons.dark_mode_outlined,
+                  title: 'Dark Mode',
+                  widget: Switch(
+                    value: isDarkMode,
+                    onChanged: (value) =>
+                        HiveService().setAppThemeMode(isDarkMode: value),
                   ),
-            ),
+                );
+              }),
+          ValueListenableBuilder(
+            valueListenable: Hive.box(HiveConstants.settingsBox).listenable(),
+            builder: (context, settingsBox, _) {
+              final languageCode = settingsBox.get(HiveConstants.languageKey, defaultValue: 'en') as String;
+              return SettingCard(
+                leadingIcon: Icons.language_outlined,
+                title: 'Language',
+                widget: Text(
+                  languageCode == 'en' ? 'English' : 'Bangla',
+                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Theme.of(context).colorScheme.primary,
+                      ),
+                ),
+                onTap: () => _showLanguageSelectDialog(context),
+              );
+            }
           ),
           SettingCard(
             leadingIcon: Icons.person,
             title: 'Logout',
-            widget: IconButton(
-              onPressed: () {},
-              icon: Icon(
-                Icons.logout,
-                color: Colors.red,
-              ),
+            widget: Icon(
+              Icons.logout,
+              color: Colors.red,
             ),
+            onTap: () => _showConfirmationDialog(context),
           ),
         ],
       ),

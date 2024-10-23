@@ -28,6 +28,14 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.whiteColor,
       textTheme: _lightTextTheme,
       appBarTheme: _appBarTheme(),
+      dialogTheme: DialogTheme(
+        insetPadding: EdgeInsets.symmetric(horizontal: 20.w, vertical: 20.h),
+        barrierColor: AppColors.darkScaffoldColor.withOpacity(0.8),
+        backgroundColor: AppColors.whiteColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7.0),
+        ),
+      ),
     );
   }
 
@@ -44,6 +52,13 @@ class AppTheme {
       scaffoldBackgroundColor: AppColors.darkScaffoldColor,
       textTheme: _darkTextTheme,
       appBarTheme: _appBarTheme(),
+      dialogTheme: DialogTheme(
+        barrierColor: AppColors.whiteColor.withOpacity(0.3),
+        backgroundColor: AppColors.darkScaffoldColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(7.0),
+        ),
+      ),
     );
   }
 

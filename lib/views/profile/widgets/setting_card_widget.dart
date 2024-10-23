@@ -5,12 +5,14 @@ class SettingCard extends StatelessWidget {
   final IconData leadingIcon;
   final Widget widget;
   final double bottomPadding;
+  final VoidCallback? onTap;
   const SettingCard({
     super.key,
     required this.title,
     required this.leadingIcon,
     required this.widget,
     this.bottomPadding = 16.0,
+    this.onTap,
   });
 
   @override
@@ -25,6 +27,7 @@ class SettingCard extends StatelessWidget {
         title: Text(title, style: Theme.of(context).textTheme.bodyMedium),
         leading: Icon(leadingIcon),
         trailing: widget,
+        onTap: onTap,
       ),
     );
   }
