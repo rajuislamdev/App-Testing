@@ -1,4 +1,5 @@
 import 'package:app_test/componants/custom_button.dart';
+import 'package:app_test/componants/snackbar_helper.dart';
 import 'package:app_test/config/routes.dart';
 import 'package:app_test/providers/auth_controller_providers.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,19 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final List<FocusNode> _focusNodes = List.generate(2, (index) => FocusNode());
+
+  void _submitLogin({required WidgetRef ref}) {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      for (var node in _focusNodes) {
+        node.unfocus();
+      }
+      ref.read(loginController.notifier).login(
+            phone: _formKey.currentState!.value['phone'],
+            password: _formKey.currentState!.value['password'],
+          );
+    }
+  }
 
   @override
   void dispose() {
@@ -78,38 +92,23 @@ class _LoginScreenState extends State<LoginScreen> {
                 Consumer(builder: (context, ref, _) {
                   final loginState = ref.watch(loginController);
                   return loginState.when(
-                    data: (user) => CustomButton(
-                      text: 'Login',
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          for (var node in _focusNodes) {
-                            node.unfocus();
-                          }
-                          ref.read(loginController.notifier).login(
-                                phone: _formKey.currentState!.value['phone'],
-                                password:
-                                    _formKey.currentState!.value['password'],
-                              );
-                        }
-                      },
-                    ),
+                    data: (user) {
+                      ref.invalidate(loginController);
+                      return CustomButton(
+                        text: 'Login',
+                        onPressed: () => _submitLogin(ref: ref),
+                      );
+                    },
                     error: (error, stackTrace) {
-                      return ErrorDisplay(
-                        errorMessage: error.toString(),
-                        onRetry: () {
-                          if (_formKey.currentState!.validate()) {
-                            _formKey.currentState!.save();
-                            for (var node in _focusNodes) {
-                              node.unfocus();
-                            }
-                            ref.read(loginController.notifier).login(
-                                  phone: _formKey.currentState!.value['email'],
-                                  password:
-                                      _formKey.currentState!.value['password'],
-                                );
-                          }
-                        },
+                      SnackbarHelper.showSnackbar(
+                        context: context,
+                        message: error.toString(),
+                        isSuccess: false,
+                      );
+                      ref.invalidate(loginController);
+                      return CustomButton(
+                        text: 'Login',
+                        onPressed: () => _submitLogin(ref: ref),
                       );
                     },
                     loading: () => const CircularProgressIndicator(),
@@ -123,7 +122,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     const Text('Don\'t have an account?'),
                     TextButton(
                       onPressed: () =>
-                          Navigator.pushNamed(context, AppRoutes.signUpScreen),
+                          Navigator.pushNamed(context, AppRoutes.thirdScreen),
                       child: const Text('Sign up'),
                     ),
                   ],

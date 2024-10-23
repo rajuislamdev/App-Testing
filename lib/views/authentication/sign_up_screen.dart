@@ -1,4 +1,6 @@
 import 'package:app_test/componants/custom_button.dart';
+import 'package:app_test/componants/snackbar_helper.dart';
+import 'package:app_test/config/routes.dart';
 import 'package:app_test/models/request/user.dart';
 import 'package:app_test/providers/auth_controller_providers.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +20,22 @@ class SignUpScreen extends StatefulWidget {
 class _SignUpScreenState extends State<SignUpScreen> {
   final GlobalKey<FormBuilderState> _formKey = GlobalKey<FormBuilderState>();
   final List<FocusNode> _focusNodes = List.generate(3, (_) => FocusNode());
+
+  void _submitSignUp({required WidgetRef ref}) {
+    if (_formKey.currentState!.validate()) {
+      _formKey.currentState!.save();
+      for (var node in _focusNodes) {
+        node.unfocus();
+      }
+      ref.read(registerController.notifier).register(
+            user: User(
+              name: _formKey.currentState!.value['name'],
+              phone: _formKey.currentState!.value['phone'],
+              password: _formKey.currentState!.value['password'],
+            ),
+          );
+    }
+  }
 
   @override
   void dispose() {
@@ -90,42 +108,51 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 Consumer(builder: (context, ref, _) {
                   final signUpState = ref.watch(registerController);
                   return signUpState.when(
-                    data: (data) => CustomButton(
-                      key: const Key('signUpButton'),
-                      text: 'Sign Up',
-                      onPressed: () async {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                        }
-                      },
-                    ),
-                    error: (error, stackTrace) => ErrorDisplay(
-                      errorMessage: error.toString(),
-                      onRetry: () {
-                        if (_formKey.currentState!.validate()) {
-                          _formKey.currentState!.save();
-                          ref.read(registerController.notifier).register(
-                              user: User.fromMap(_formKey.currentState!.value));
-                        }
-                      },
-                    ),
+                    data: (data) {
+                      ref.invalidate(registerController);
+                      if (data != null) {
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          Navigator.of(context).pushReplacementNamed(
+                            AppRoutes.thirdScreen,
+                          );
+                        });
+                      }
+                      return CustomButton(
+                        key: const Key('signUpButton'),
+                        text: 'Sign Up',
+                        onPressed: () => _submitSignUp(ref: ref),
+                      );
+                    },
+                    error: (error, stackTrace) {
+                      SnackbarHelper.showSnackbar(
+                        context: context,
+                        message: error.toString(),
+                        isSuccess: false,
+                      );
+                      ref.invalidate(registerController);
+                      return CustomButton(
+                        onPressed: () => _submitSignUp(ref: ref),
+                        text: 'Sign Up',
+                      );
+                    },
                     loading: () => const CircularProgressIndicator(),
                   );
                 }),
                 Gap(16.h),
                 Wrap(
-                    alignment: WrapAlignment.center,
-                    crossAxisAlignment: WrapCrossAlignment.center,
-                    children: [
-                      const Text('Already have an account?'),
-                      TextButton(
-                        key: const Key('signUpLoginButton'),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        child: const Text('Login'),
-                      ),
-                    ])
+                  alignment: WrapAlignment.center,
+                  crossAxisAlignment: WrapCrossAlignment.center,
+                  children: [
+                    const Text('Already have an account?'),
+                    TextButton(
+                      key: const Key('signUpLoginButton'),
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      child: const Text('Login'),
+                    ),
+                  ],
+                )
               ],
             ),
           ),

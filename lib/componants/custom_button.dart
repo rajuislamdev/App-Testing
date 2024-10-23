@@ -18,27 +18,3 @@ class CustomButton extends StatelessWidget {
     );
   }
 }
-
-class ErrorDisplay extends StatelessWidget {
-  final String errorMessage;
-  final VoidCallback onRetry;
-
-  const ErrorDisplay(
-      {super.key, required this.errorMessage, required this.onRetry});
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          errorMessage,
-          style: const TextStyle(color: Colors.red),
-        ),
-        ElevatedButton(
-          onPressed: onRetry,
-          child: const Text('Retry'),
-        ),
-      ],
-    );
-  }
-}

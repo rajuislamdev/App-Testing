@@ -22,9 +22,10 @@ class AuthRepository implements AuthRepositoryInterface {
       if (response.statusCode == 200) {
         return response_model.User.fromMap(response.data);
       }
-      throw Exception(response.data['message']);
+      return Future.error(response.data['message']);
     } on DioException catch (e) {
-      throw Exception(ApiInterceptors.handleError(e));
+      final errorMessage = ApiInterceptors.handleError(e);
+      return Future.error(errorMessage);
     }
   }
 
@@ -35,9 +36,10 @@ class AuthRepository implements AuthRepositoryInterface {
       if (response.statusCode == 200) {
         return response_model.User.fromMap(response.data);
       }
-      throw Exception(response.data['message']);
+      return Future.error(response.data['message']);
     } on DioException catch (e) {
-      throw Exception(ApiInterceptors.handleError(e));
+      final errorMessage = ApiInterceptors.handleError(e);
+      return Future.error(errorMessage);
     }
   }
 }

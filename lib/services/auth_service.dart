@@ -20,7 +20,8 @@ class AuthService implements AuthServiceInterface {
 
   @override
   Future<Response> register({required User user}) async {
-    final response = await ApiClient().post(AppConstants.signUp, data: user);
+    final response =
+        await ApiClient().post(AppConstants.signUp, data: user.toMap());
     return response;
   }
 }

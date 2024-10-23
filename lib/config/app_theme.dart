@@ -18,9 +18,10 @@ class AppTheme {
   static ThemeData _createLightTheme() {
     return ThemeData.light().copyWith(
       brightness: Brightness.light,
-      colorScheme: ColorScheme.light().copyWith(
+      colorScheme: ColorScheme.light(
         primary: AppColors.primaryColor,
         brightness: Brightness.light,
+        surfaceContainer: AppColors.lightTextFormFieldFillColor,
       ),
       elevatedButtonTheme: _elevatedButtonTheme(),
       inputDecorationTheme: _inputDecorationLightTheme(),
@@ -36,6 +37,7 @@ class AppTheme {
       colorScheme: ColorScheme.dark().copyWith(
         primary: AppColors.primaryColor,
         brightness: Brightness.dark,
+        surfaceContainer: AppColors.darkTextFormFieldFillColor,
       ),
       elevatedButtonTheme: _elevatedButtonTheme(),
       inputDecorationTheme: _inputDecorationDarkTheme(),
@@ -67,20 +69,6 @@ class AppTheme {
       ),
     );
   }
-
-  // static ElevatedButtonThemeData _darkElevatedButtonTheme() {
-  //   return ElevatedButtonThemeData(
-  //     style: ElevatedButton.styleFrom(
-  //       minimumSize: Size(double.infinity, 48.h),
-  //       foregroundColor: Colors.white,
-  //       backgroundColor: AppColors.primaryColor,
-  //       textStyle: const TextStyle(fontSize: 16.0, color: Colors.white),
-  //       shape: RoundedRectangleBorder(
-  //         borderRadius: BorderRadius.circular(8.0),
-  //       ),
-  //     ),
-  //   );
-  // }
 
   static InputDecorationTheme _inputDecorationLightTheme() {
     return InputDecorationTheme(

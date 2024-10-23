@@ -22,7 +22,7 @@ class AppRoutes {
       case loginScreen:
         return _buildRouteWithAnimation(const LoginScreen());
       case thirdScreen:
-        return _buildRouteWithAnimation(const SignUpSuccessScreen());
+        return _buildRouteWithAnimation(const ProfileScreen());
       default:
         debugPrint('Unknown route: ${settings.name}');
         return MaterialPageRoute(builder: (_) => SizedBox());
